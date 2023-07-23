@@ -120,35 +120,6 @@ class ProductController {
     }
   }
 
-  async createCategory({ request, response }){
-    try {
-      const body = request.only(['name'])
-      const isUnique = await BasicService.checkUniqueData({ modelName: 'ProductCategory', field: 'name', key: body.name })
-      if(!isUnique){
-        return response.json({ success: false, data: {}, message: 'Product Category with the same name already exists.' })
-      }
-      const result = await ProductCategory.create({ name: body.name })
-      return response.json({ success: true, data: result, message: 'Create Product Category success.' })
-    } catch (error) {
-      console.error(error)
-      return response.status(500).json({ success: false, data: {}, message: 'Unknown error occured.'})
-    }    
-  }
-
-  async listCategory({ request, response }){
-    const params = request.only([ 'page', 'limit', 'search' ])
-    const query = ProductCategory.query()
-    if(params.search) query.whereRaw(`name ilike '%${params.search}%'`)
-    const result = await query.paginate(params.page ? params.page : 1, params.limit ? params.limit : 5)
-    return response.json({
-      success: true,
-      data: result,
-      message: 'Get list Product Category successful.'
-    })
-  }
-
-
-
 }
 
 module.exports = ProductController
