@@ -31,9 +31,8 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('/', 'ProductCategoryController.list')
-  Route.get('/:id', 'ProductCategoryController.show')
   Route.post('/', 'ProductCategoryController.store')
-  Route.put('/:id', 'ProductCategoryController.update')
+  Route.patch('/:id', 'ProductCategoryController.update')
   Route.delete('/:id', 'ProductCategoryController.delete')
 }).prefix('v1/product-categories').middleware(['auth'])
 
