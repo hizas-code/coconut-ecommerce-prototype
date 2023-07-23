@@ -40,7 +40,7 @@ Route.group(() => {
   Route.get('/', 'WarehouseController.list')
   Route.get('/:id', 'WarehouseController.show')
   Route.post('/', 'WarehouseController.store')
-  Route.put('/:id', 'WarehouseController.update')
+  Route.patch('/:id', 'WarehouseController.update')
   Route.delete('/:id', 'WarehouseController.delete')
 }).prefix('v1/warehouses').middleware(['auth'])
 
