@@ -51,11 +51,9 @@ Route.group(() => {
 }).prefix('v1/stocks').middleware(['auth'])
 
 Route.group(() => {
-  Route.get('/', 'WarehouseController.list')
-  Route.get('/:id', 'WarehouseController.show')
-  Route.post('/', 'WarehouseController.store')
-  Route.put('/:id', 'WarehouseController.update')
-  Route.delete('/:id', 'WarehouseController.delete')
+  Route.post('/create', 'OrderController.create')
+  Route.post('/confirm', 'OrderController.confirm')
+  Route.post('/finish', 'OrderController.finish')
 }).prefix('v1/orders').middleware(['auth'])
 
 
