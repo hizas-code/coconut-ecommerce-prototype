@@ -45,8 +45,9 @@ Route.group(() => {
 }).prefix('v1/warehouses').middleware(['auth'])
 
 Route.group(() => {
-  Route.get('/add', 'StockController.add')
+  Route.post('/add', 'StockController.add')
   Route.get('/report', 'StockController.report')
+  Route.get('/report/:id', 'StockController.reportDetail')
 }).prefix('v1/stocks').middleware(['auth'])
 
 Route.group(() => {
