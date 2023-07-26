@@ -17,9 +17,9 @@ class ProductController {
     try {
       for(const product of body.products){
         const productCode = await BasicService.generateCode({ modelName: 'Product', uniqueColumn: 'code'})
-        const isProductCategoryExists = await ProductCategory.query().where('deleted_at', null).where('id', product.category_id) .first()
+        const isProductCategoryExists = await ProductCategory.query().where('deleted_at', null).where('id', product.category_id).first()
         if(!isProductCategoryExists) {
-          return response.status(400).json({ false: true, data: {}, message: 'Invalid Product Category ID.' })
+          return response.status(400).json({ false: true, result: {}, message: 'Invalid Product Category ID.' })
         }
         const productData = { name: product.name, code: productCode,  product_category_id: product.category_id, description: product.description }
         newProducts.push(productData)
@@ -35,7 +35,7 @@ class ProductController {
       }
     } catch(error){
       console.error(error)
-      return response.status(500).json({ success: false, data: {}, message: 'Unknown error occured.'})
+      return response.status(500).json({ success: false, result: {}, message: 'Unknown error occured.'})
     }
 
     const trx = await DB.beginTransaction()
@@ -44,24 +44,25 @@ class ProductController {
       await ProductItem.createMany(newProductItems, trx)
       await ProductItemDetail.createMany(newProductItemDetails, trx)
       await trx.commit()
-      return response.json({ success: true, data: result, message: 'Create Product successful.' })
+      return response.status(200).json({ success: true, result: result, message: 'Create Product successful.' })
     } catch(error){
       console.error(error)
       await trx.rollback()
-      return response.status(500).json({ success: false, data: {}, message: 'Unknown error occured.'})
+      return response.status(500).json({ success: false, result: {}, message: 'Unknown error occured.'})
     }
   }
 
   async list({ request, response }){
     const params = request.only([ 'page', 'limit', 'search' ])
-    const query = Product.query().where('deleted_at', null)
-    if(params.search) query.whereRaw(`name ilike '%${params.search}%'`)
-    const result = await query.paginate(params.page ? params.page : 1, params.limit ? params.limit : 5)
-    return response.json({
-      success: true,
-      data: result,
-      message: 'Get list Product Category successful.'
-    })
+    try {
+      const query = Product.query().where('deleted_at', null)
+      if(params.search) query.whereRaw(`name ilike '%${params.search}%'`)
+      const result = await query.paginate(params.page ? params.page : 1, params.limit ? params.limit : 5)
+      return response.status(200).json({ success: true, result: result, message: 'Get list Product Category successful.' })
+    } catch(error){
+      console.error(error)
+      return response.status(500).json({ success: false, result: {}, message: 'Unknown error occured.'})
+    }
   }
 
   async show({ params, response }){
@@ -70,9 +71,9 @@ class ProductController {
       .where('deleted_at', null)
       .where('id', params.id)
       .first()
-    return response.json({
+    return response.status(200).json({
       success: true,
-      data: result,
+      result: result,
       message: 'Get list Product Category successful.'
     })
   }
@@ -86,9 +87,9 @@ class ProductController {
     const newProductItemDetails = []
     try {
       const product =  await Product.query().where('deleted_at', null).where('id', params.id).first()
-      if(!product) return response.status(400).json({ success: false, data: {}, message: 'Product does not exists.'})
+      if(!product) return response.status(400).json({ success: false, result: {}, message: 'Product does not exists.'})
       productCode = product.code
-      if(body.items.length == 0) return response.status(500).json({ success: false, data: {}, message: 'Product must have at least 1 item.'})
+      if(body.items.length == 0) return response.status(500).json({ success: false, result: {}, message: 'Product must have at least 1 item.'})
       for(const productItem of body.items){
         const productItemCode = await BasicService.generateCode({ modelName: 'ProductItem', uniqueColumn: 'code'})
         productItemCodes.push(productItemCode)
@@ -100,7 +101,7 @@ class ProductController {
       }
     } catch(error){
       console.error(error)
-      return response.status(500).json({ success: false, data: {}, message: 'Unknown error occured.'})
+      return response.status(500).json({ success: false, result: {}, message: 'Unknown error occured.'})
     }
     const oldProductItems = await ProductItem.query().where('deleted_at', null)
     const trx = await DB.beginTransaction()
@@ -112,11 +113,11 @@ class ProductController {
       await ProductItemDetail.createMany(newProductItemDetails, trx)
       await trx.commit()
       const result = await Product.query().where('id', params.id).first()
-      return response.json({ success: true, data: result, message: 'Update Product successful.' })
+      return response.status(200).json({ success: true, result: result, message: 'Update Product successful.' })
     } catch(error){
       console.error(error)
       await trx.rollback()  
-      return response.status(500).json({ success: false, data: {}, message: 'Unknown error occured.'})
+      return response.status(500).json({ success: false, result: {}, message: 'Unknown error occured.'})
     }
   }
 
