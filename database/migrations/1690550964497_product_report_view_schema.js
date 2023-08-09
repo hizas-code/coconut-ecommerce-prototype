@@ -7,33 +7,27 @@ class ProductReportViewSchema extends Schema {
   up () {
     this.raw(`drop view if exists public.product_report_view;`)
     this.raw(`
-    CREATE OR REPLACE VIEW public.product_report_view as
-    SELECT 
-       p.id,
+    CREATE OR REPLACE VIEW public.product_report_view
+    AS SELECT p.id,
         p.name,
         p.description,
-        (COALESCE(stock_quantity, 0) - COALESCE(order_quantity, 0)) AS quantity,
+        COALESCE(stock_subquery.stock_quantity, 0::bigint) - COALESCE(order_subquery.order_quantity, 0::bigint) AS quantity,
         p.created_at,
         p.updated_at,
         p.deleted_at
-    FROM
-        products p
-    LEFT JOIN (
-        SELECT 
-            pi.product_code,
-            SUM(s.quantity) AS stock_quantity
-        from product_items pi
-        LEFT join stocks s ON pi.id = s.product_item_id
-        GROUP by pi.product_code
-    ) AS stock_subquery ON p.code = stock_subquery.product_code
-    LEFT JOIN (
-        SELECT 
-            pi.product_code,
-            SUM(o.amount) AS order_quantity
-        from product_items pi
-        LEFT join orders o ON pi.id = o.product_item_id
-        GROUP by pi.product_code
-    ) AS order_subquery ON p.code = order_subquery.product_code;
+     FROM products p
+     LEFT JOIN ( SELECT pi.product_code,
+            sum(s.quantity) AS stock_quantity
+           FROM product_items pi
+             LEFT JOIN stocks s ON pi.id = s.product_item_id
+          WHERE pi.deleted_at IS NULL AND s.deleted_at IS NULL
+          GROUP BY pi.product_code) stock_subquery ON p.code::text = stock_subquery.product_code::text
+     LEFT JOIN ( SELECT pi.product_code,
+            sum(o.amount) AS order_quantity
+           FROM product_items pi
+             LEFT JOIN orders o ON pi.id = o.product_item_id
+          WHERE pi.deleted_at IS NULL AND o.deleted_at IS NULL
+          GROUP BY pi.product_code) order_subquery ON p.code::text = order_subquery.product_code::text;
     `)
   }
 
