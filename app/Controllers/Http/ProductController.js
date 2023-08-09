@@ -103,7 +103,7 @@ class ProductController {
       console.error(error)
       return response.status(500).json({ success: false, result: {}, message: 'Unknown error occured.'})
     }
-    const oldProductItems = await ProductItem.query().where('deleted_at', null)
+    // const oldProductItems = await ProductItem.query().where('deleted_at', null)
     const trx = await DB.beginTransaction()
     try {
       await Product.query().where('id', params.id).update(newProductData).transacting(trx)
@@ -117,6 +117,27 @@ class ProductController {
     } catch(error){
       console.error(error)
       await trx.rollback()  
+      return response.status(500).json({ success: false, result: {}, message: 'Unknown error occured.'})
+    }
+  }
+
+  async delete({ params, response }){
+    let trxStart = false
+    try {
+      const product =  await Product.query().where('deleted_at', null).where('id', params.id).first()
+      const arrayProductItemCodes = []
+      const productItems = (await ProductItem.query().where('deleted_at', null).where('product_code', product.code).fetch()).toJSON()
+      for(const productItem of productItems) arrayProductItemCodes.push(productItem.code)
+      const trx = await DB.beginTransaction()
+      await Product.query().where('deleted_at', null).where('id', params.id).update({ deleted_at: new Date() }).transacting(trx)
+      await ProductItem.query().where('deleted_at', null).where('product_code', product.code).update({ deleted_at: new Date() }).transacting(trx)
+      await ProductItemDetail.query().where('deleted_at', null).whereIn('product_item_code', arrayProductItemCodes).update({ deleted_at: new Date() }).transacting(trx)
+      trxStart = true
+      await trx.commit()
+      return response.status(200).json({ success: true, result: {}, message: 'Delete Product successful.' })
+    } catch(error){
+      if(trxStart) await trx.rollback()
+      console.error(error)
       return response.status(500).json({ success: false, result: {}, message: 'Unknown error occured.'})
     }
   }
