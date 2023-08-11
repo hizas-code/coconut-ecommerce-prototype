@@ -1,0 +1,823 @@
+{
+	"info": {
+		"_postman_id": "b336ff96-38c4-43c6-aba4-fc6c8b303ded",
+		"name": "Coconut",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "489929"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Update Token', function () {\r",
+									"  const responseBody = pm.response.json();\r",
+									"  const token = responseBody.result.token;\r",
+									"\r",
+									"  pm.environment.set('token', token);\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "user_testing_1",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "testing_1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/v1/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "user_testing_1",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "testing_1@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "testing_1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/v1/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product Category",
+			"item": [
+				{
+					"name": "Create Product Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Cosmetic",
+									"description": "required",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/v1/product-categories",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"product-categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Product Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/product-categories?page=1&limit=10&search=Pant",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"product-categories"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "Pant"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product Category",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Pantss",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/v1/product-categories/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"product-categories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/product-categories/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"product-categories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"products\": [\r\n        {\r\n            \"name\": \"Baju Sekolah\",\r\n            \"description\": \"Baju sekolah ini bagus\",\r\n            \"category_id\": 2,\r\n            \"items\": [\r\n                {\r\n                    \"price\": 60000,\r\n                    \"details\": [\r\n                        {\r\n                            \"detail\": \"Ukuran\",\r\n                            \"name\": \"S\"\r\n                        },\r\n                        {\r\n                            \"detail\": \"Warna\",\r\n                            \"name\": \"Merah\"\r\n                        }\r\n                    ]\r\n                },\r\n                {\r\n                    \"price\": 70000,\r\n                    \"details\": [\r\n                        {\r\n                            \"detail\": \"Ukuran\",\r\n                            \"name\": \"M\"\r\n                        },\r\n                        {\r\n                            \"detail\": \"Warna\",\r\n                            \"name\": \"Putih\"\r\n                        }\r\n                    ]\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"Baju Pramuka\",\r\n            \"description\": \"Baju pramuka ini bagus\",\r\n            \"category_id\": 1,\r\n            \"items\": [\r\n                {\r\n                    \"price\": 70000,\r\n                    \"details\": [\r\n                        {\r\n                            \"detail\": \"Ukuran\",\r\n                            \"name\": \"M\"\r\n                        },\r\n                        {\r\n                            \"detail\": \"Warna\",\r\n                            \"name\": \"Merah\"\r\n                        }\r\n                    ]\r\n                },\r\n                {\r\n                    \"price\": 80000,\r\n                    \"details\": [\r\n                        {\r\n                            \"detail\": \"Ukuran\",\r\n                            \"name\": \"L\"\r\n                        },\r\n                        {\r\n                            \"detail\": \"Warna\",\r\n                            \"name\": \"Putih\"\r\n                        }\r\n                    ]\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/products",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/products?page=1&limit=10&search=pra",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "pra"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/products/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Baju Sekolah Hebatsss\",\r\n    \"description\": \"Baju sekolah ini bagus\",\r\n    \"category_id\": 7,\r\n    \"items\": [\r\n        {\r\n            \"price\": 75000,\r\n            \"details\": [\r\n                {\r\n                    \"detail\": \"Ukuran\",\r\n                    \"name\": \"M\"\r\n                },\r\n                {\r\n                    \"detail\": \"Warna\",\r\n                    \"name\": \"Merah\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/products/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/products/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Warehouse",
+			"item": [
+				{
+					"name": "Create Warehouse",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Warehouse Bandung 2B",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Jalan Margasari 1  No. 1 Buahbatu, Bandung",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Bandung",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Warehouse ini terletak di Buahbatu Bandung",
+									"type": "text"
+								},
+								{
+									"key": "zip_code",
+									"value": "800001",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/v1/warehouses",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"warehouses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Warehouse",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/warehouses?page=1&limit=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"warehouses"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show Warehouse",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/warehouses/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"warehouses",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Warehouse",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Warehouse Bandung A",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Jalan Margasari 2  No. 1 Buahbatu, Bandung",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "Bandung",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Warehouse ini terletak di Buahbatu Bandung",
+									"type": "text"
+								},
+								{
+									"key": "zip_code",
+									"value": "800001",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/v1/warehouses/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"warehouses",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Warehouse",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/warehouses/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"warehouses",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Create Order (Customer)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product_item_id",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "amount",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/v1/orders/create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"orders",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "warehouse_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "order_id",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/v1/orders/confirm",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"orders",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finish Order (Customer)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "order_id",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/v1/orders/finish",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"orders",
+								"finish"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Stock",
+			"item": [
+				{
+					"name": "Add Stock to Warehouse",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_item_id\": 8,\r\n    \"warehouse_id\": 2,   \r\n    \"quantity\": 11,\r\n    \"supplier\": \"Supplier A\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/v1/stocks/add",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"stocks",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Stock Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/stocks/report?page=1&limit=10",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"stocks",
+								"report"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Stock Report Detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/v1/stocks/report/:id",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"v1",
+								"stocks",
+								"report",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "4",
+									"description": "Product ID"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
