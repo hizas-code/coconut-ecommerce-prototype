@@ -31,9 +31,8 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get('/', 'ProductCategoryController.list')
-  Route.get('/:id', 'ProductCategoryController.show')
   Route.post('/', 'ProductCategoryController.store')
-  Route.put('/:id', 'ProductCategoryController.update')
+  Route.patch('/:id', 'ProductCategoryController.update')
   Route.delete('/:id', 'ProductCategoryController.delete')
 }).prefix('v1/product-categories').middleware(['auth'])
 
@@ -41,21 +40,20 @@ Route.group(() => {
   Route.get('/', 'WarehouseController.list')
   Route.get('/:id', 'WarehouseController.show')
   Route.post('/', 'WarehouseController.store')
-  Route.put('/:id', 'WarehouseController.update')
+  Route.patch('/:id', 'WarehouseController.update')
   Route.delete('/:id', 'WarehouseController.delete')
 }).prefix('v1/warehouses').middleware(['auth'])
 
 Route.group(() => {
-  Route.get('/add', 'StockController.add')
+  Route.post('/add', 'StockController.add')
   Route.get('/report', 'StockController.report')
+  Route.get('/report/:id', 'StockController.reportDetail')
 }).prefix('v1/stocks').middleware(['auth'])
 
 Route.group(() => {
-  Route.get('/', 'WarehouseController.list')
-  Route.get('/:id', 'WarehouseController.show')
-  Route.post('/', 'WarehouseController.store')
-  Route.put('/:id', 'WarehouseController.update')
-  Route.delete('/:id', 'WarehouseController.delete')
+  Route.post('/create', 'OrderController.create')
+  Route.post('/confirm', 'OrderController.confirm')
+  Route.post('/finish', 'OrderController.finish')
 }).prefix('v1/orders').middleware(['auth'])
 
 

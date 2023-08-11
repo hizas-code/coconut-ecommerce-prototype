@@ -11,11 +11,13 @@ class BasicService {
     return result
   }
 
-  static async checkUniqueData({ modelName, field, key }){
+  static async checkUniqueData({ modelName, field, key, id=null }){
     const modelPath = 'App/Models/' + modelName
     const model = use(modelPath)
-    const isExist = await model.query().where('deleted_at', null).where(field, key).first()
-    if(isExist) return false
+    const isExist = model.query().where('deleted_at', null).where(field, key)
+    if(id) isExist.whereNot('id', id)
+    const result = await isExist.first()
+    if(result) return false
     else return true
   }
 

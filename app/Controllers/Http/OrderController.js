@@ -5,27 +5,42 @@ const BasicService = use('App/Services/BasicService')
 
 class OrderController {
 
-  async makeOrders({ auth, request, response }){
+  async create({ auth, request, response }){
+    const body = request.only([ 'product_item_id', 'amount' ])
     try {
-      const body = request.only([ 'product_item_id', 'amount' ])
       const orderData = {
+        customer_id: auth.user.id,
         product_item_id: body.product_item_id,
-        amount: body.item,
+        amount: body.amount,
         order_date: new Date(),
-        status: 'on_process', // on_process, delivered, cancelled
+        order_status: 'on_process' // on_process, on_delivery, completed
       }
       const result = await Order.create(orderData)
+      return response.status(200).json({ success: true, data: result, message: 'Order created successfully.'})
     } catch (error){
       console.error(error)
       return response.status(500).json({ success: false, data: {}, message: 'Unknown error occured.'})
     }
   }
 
-  async finishOrder({ auth, request, response }){
+  async confirm({ request, response }){
+    const body = request.only([ 'order_id', 'warehouse_id' ])
+    try {
+      await Order.query().where('id', body.order_id).update({ warehouse_id: body.warehouse_id, order_status: 'on_delivery' })
+      const result = await Order.query().where('id', body.order_id).first()
+      return response.status(200).json({ success: true, data: result, message: 'Order updated successfully.'})
+    } catch (error){
+      console.error(error)
+      return response.status(500).json({ success: false, data: {}, message: 'Unknown error occured.'})
+    }
+  }
+
+  async finish({ request, response }){
     const body = request.only([ 'order_id' ])
     try {
-      const result =  await Order.query().where('deleted_at', null).update({ status: 'delivered' })
-      return response.status(200).json({ success: true, data: result, message: 'Order finished successfully.'})
+      await Order.query().where('id', body.order_id).update({ order_status: 'completed' })
+      const result = await Order.query().where('id', body.order_id).first()
+      return response.status(200).json({ success: true, data: result, message: 'Order updated successfully.'})
     } catch (error){
       console.error(error)
       return response.status(500).json({ success: false, data: {}, message: 'Unknown error occured.'})
